@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- 오이냉국수: 넓은 그릇에 맑은 국물, 흰 국수, 채 썬 오이, 얼음, 고추 한 조각 -->
+  <ellipse cx="32" cy="30" rx="27" ry="9" fill="#f4f1e6"/>
+  <path d="M5 30 C6 46 18 55 32 55 C46 55 58 46 59 30 C55 36 44 39 32 39 C20 39 9 36 5 30Z" fill="#e9e3d2" stroke="#cfc6ae" stroke-width="1"/>
+  <ellipse cx="32" cy="30" rx="24" ry="7" fill="#f7f3d8"/>
+  <g fill="none" stroke="#fffdf4" stroke-width="2.2" stroke-linecap="round">
+    <path d="M14 31 C20 27 26 34 32 29 C38 25 44 33 50 29"/>
+    <path d="M16 33 C22 30 28 35 34 31 C40 28 45 34 49 32"/>
+  </g>
+  <g stroke-linecap="round">
+    <path d="M18 27 L30 23" stroke="#3f9a3c" stroke-width="3"/><path d="M18 27 L30 23" stroke="#a9de8a" stroke-width="1.2"/>
+    <path d="M22 30 L35 25" stroke="#3f9a3c" stroke-width="3"/><path d="M22 30 L35 25" stroke="#a9de8a" stroke-width="1.2"/>
+    <path d="M28 28 L42 24" stroke="#3f9a3c" stroke-width="3"/><path d="M28 28 L42 24" stroke="#a9de8a" stroke-width="1.2"/>
+    <path d="M33 31 L46 27" stroke="#3f9a3c" stroke-width="3"/><path d="M33 31 L46 27" stroke="#a9de8a" stroke-width="1.2"/>
+  </g>
+  <rect x="42" y="27" width="8" height="7" rx="2" fill="#ffffff" opacity=".85" stroke="#dfe6e3" stroke-width=".8"/>
+  <rect x="12" y="28" width="7" height="6" rx="2" fill="#ffffff" opacity=".85" stroke="#dfe6e3" stroke-width=".8"/>
+  <circle cx="38" cy="33" r="1.6" fill="#e0473a"/>
+</svg>

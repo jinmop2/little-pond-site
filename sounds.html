@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12080e">
+<title>소리 들어보기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #12080e; --ink: #fbeee4; --dim: #cdb3aa; --warm: #ffb37a; --line: #4a2c38; --card: #24131c; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: 'Gowun Dodum', system-ui, sans-serif; word-break: keep-all; -webkit-tap-highlight-color: transparent; }
+  main { max-width: 480px; margin: 0 auto; padding: 28px 16px calc(40px + env(safe-area-inset-bottom)); }
+  h1 { font-family: 'Jua', sans-serif; font-weight: 400; font-size: 28px; margin: 0 0 6px; }
+  .note { color: var(--dim); font-size: 14px; line-height: 1.6; margin: 0 0 22px; }
+  h2 { font-family: 'Jua', sans-serif; font-weight: 400; font-size: 18px; color: var(--warm); margin: 26px 0 10px; }
+  .item { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 12px 12px 12px 16px; margin-bottom: 10px; }
+  .item div { flex: 1; min-width: 0; }
+  .item b { display: block; font-size: 16px; font-weight: 400; }
+  .item small { color: var(--dim); font-size: 13px; line-height: 1.5; }
+  button { flex: none; width: 56px; height: 56px; border-radius: 50%; border: 1.5px solid var(--line); background: #2f1924; color: var(--ink); font-size: 20px; cursor: pointer; }
+  button.on { background: var(--warm); color: #3a1a10; border-color: var(--warm); }
+</style>
+</head>
+<body>
+<main>
+  <h1>🔊 소리 들어보기</h1>
+  <p class="note">지금 게임에 들어 있는 소리예요. 녹음 파일 없이 폰에서 직접 만들어 내는 소리예요.<br>무음 모드를 끄고 들어 주세요. ▶ 를 누르면 나오고, ■ 를 누르면 멈춰요.</p>
+
+  <h2>1~4장 배경</h2>
+  <div class="item"><div><b>물속 웅웅 + 쿵쿵 (작게)</b><small>게임 내내 깔리는 소리. 2~4장은 이 크기</small></div><button data-s="bg">▶</button></div>
+  <div class="item"><div><b>물속 웅웅 + 쿵쿵 (크게)</b><small>1장 🌙 안쪽 — 조개가 이 박자에 맞춰 반짝여요</small></div><button data-s="bgLoud">▶</button></div>
+
+  <h2>3장</h2>
+  <div class="item"><div><b>물 밖 웅얼웅얼 목소리</b><small>☀️ 바깥 다이얼 — 녹음을 넣기 전 임시 소리 (먹먹 → 또렷)</small></div><button data-s="babble">▶</button></div>
+
+  <h2>엔딩</h2>
+  <div class="item"><div><b>엔딩 노래 — 받은 오르골</b><small>엔딩에서 문을 지나 밝은 곳으로 나온 순간부터 편지·빙고까지 (한 소절 43초 이음새 없이 반복)</small></div><button data-s="box">▶</button></div>
+  <div class="item"><div><b>문이 열리는 소리</b><small>4장 문 열기 → 하얀 빛</small></div><button data-s="door">▶</button></div>
+</main>
+<script src="assets/js/config.js?v=deb9db6f"></script>
+<script src="assets/js/sound.js?v=deb9db6f"></script>
+<script>
+(function () {
+  var cur = null, curBtn = null;
+  function stop() {
+    if (cur) { cur.forEach(function (f) { try { f(); } catch (e) {} }); cur = null; }
+    if (curBtn) { curBtn.classList.remove('on'); curBtn.textContent = '▶'; curBtn = null; }
+  }
+  var heartOn = false;
+  function bg(vol) {
+    SFX.ambient(true); SFX.setHeart(vol);
+    if (!heartOn) { SFX.heart(vol); heartOn = true; }
+    return [function () { SFX.ambient(false); SFX.setHeart(0); }];
+  }
+  var PLAY = {
+    bg: function () { return bg(0.3); },
+    bgLoud: function () { return bg(1); },
+    babble: function () {
+      var alive = true, h = null, k = 0, clar = [0.12, 0.12, 1, 1];
+      function again() { if (!alive) return; h = SFX.babble(20, clar[k++ % clar.length], function () { setTimeout(again, 700); }); }
+      again();
+      return [function () { alive = false; if (h) h.stop(); }];
+    },
+    box: function () { var m = SFX.song(BABY.song, { loop: BABY.songLoop }); return [function () { m.stop(); }]; },
+    door: function () { SFX.play('door'); SFX.play('whoosh'); var t = setTimeout(stop, 3200); return [function () { clearTimeout(t); }]; },
+  };
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-s]'); if (!b) return;
+    SFX.unlock();
+    var same = b === curBtn;
+    stop();
+    if (same) return;
+    // 아이폰은 깨운 직후 한 박자 늦게 열린다
+    setTimeout(function () { cur = PLAY[b.dataset.s](); curBtn = b; b.classList.add('on'); b.textContent = '■'; }, 60);
+  });
+})();
+</script>
+</body>
+</html>
